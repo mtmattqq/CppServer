@@ -19,5 +19,6 @@ public:
     TcpListener(const std::string &ip_addr, const uint16_t &port);
     ~TcpListener();
     bool bind();
-    void accept();
+    int accept();
+    sockaddr_in get_client_address();
 };

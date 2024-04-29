@@ -1,8 +1,15 @@
 #include "TcpListener.hpp"
 #include <iostream>
+#include <netinet/in.h>
+#include <sys/socket.h>
 
 bool TcpListener::listen() {
     int result = ::listen(socket_fd, 20);
+    return result != -1;
+}
+
+bool TcpListener::bind() {
+    int result = ::bind(socket_fd, (sockaddr*) &address, sizeof(address));
     return result != -1;
 }
 
@@ -12,9 +19,9 @@ TcpListener::TcpListener(const std::string &ip_addr, const uint16_t &port) {
     address.sin_port = htons(port);
     inet_pton(AF_INET, ip_addr.c_str(), &address.sin_addr.s_addr);
     if(bind()) {
-        std::cout << "Bind to the port: " << port << "successfully!\n";
+        std::cout << "Bind to the port: " << port << " successfully!\n";
     } else {
-        std::cout << "Binding to the port: " << port << "failed\n";
+        std::cout << "Binding to the port: " << port << " failed\n";
     }
     if(listen()) {
         std::cout << "Listenning to the port: " << port << "\n";
@@ -25,4 +32,14 @@ TcpListener::TcpListener(const std::string &ip_addr, const uint16_t &port) {
 
 TcpListener::~TcpListener() {
     close(socket_fd);
+}
+
+int TcpListener::accept() {
+    socklen_t client_address_size{sizeof(client_address)};
+    int result = ::accept(socket_fd, (sockaddr*) &client_address, &client_address_size);
+    return result;
+}
+
+sockaddr_in TcpListener::get_client_address() {
+    return client_address;
 }
