@@ -1,3 +1,6 @@
+#ifndef TCP_LISTENER_HPP
+#define TCP_LISTENER_HPP
+
 #include <cstdlib>
 #include <string>
 #include <cstdint>
@@ -6,6 +9,7 @@
 #include <sys/socket.h> 
 #include <arpa/inet.h> 
 #include <unistd.h>
+#include "TcpStream.hpp"
 
 class TcpListener {
 private:
@@ -19,6 +23,8 @@ public:
     TcpListener(const std::string &ip_addr, const uint16_t &port);
     ~TcpListener();
     bool bind();
-    int accept();
+    TcpStream accept();
     sockaddr_in get_client_address();
 };
+
+#endif

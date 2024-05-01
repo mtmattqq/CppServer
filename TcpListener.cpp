@@ -1,4 +1,5 @@
 #include "TcpListener.hpp"
+#include "TcpStream.hpp"
 #include <iostream>
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -22,6 +23,7 @@ TcpListener::TcpListener(const std::string &ip_addr, const uint16_t &port) {
         std::cout << "Bind to the port: " << port << " successfully!\n";
     } else {
         std::cout << "Binding to the port: " << port << " failed\n";
+        exit(-1);
     }
     if(listen()) {
         std::cout << "Listenning to the port: " << port << "\n";
@@ -34,10 +36,10 @@ TcpListener::~TcpListener() {
     close(socket_fd);
 }
 
-int TcpListener::accept() {
+TcpStream TcpListener::accept() {
     socklen_t client_address_size{sizeof(client_address)};
-    int result = ::accept(socket_fd, (sockaddr*) &client_address, &client_address_size);
-    return result;
+    int client_socket_fd = ::accept(socket_fd, (sockaddr*) &client_address, &client_address_size);
+    return TcpStream(client_address, client_socket_fd);
 }
 
 sockaddr_in TcpListener::get_client_address() {
