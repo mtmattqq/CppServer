@@ -27,7 +27,6 @@ bool TcpStream::connect() {
 }
 
 int TcpStream::send(std::vector<uint8_t> &data) {
-    const int DEFAULT{0};
     ssize_t result{::send(
         socket_fd, (void*) &(data[0]), 
         data.size() * sizeof(uint8_t), DEFAULT)};
@@ -35,9 +34,14 @@ int TcpStream::send(std::vector<uint8_t> &data) {
 }
 
 int TcpStream::send(std::string &data) {
-    const int DEFAULT{0};
     ssize_t result{::send(
         socket_fd, (void*) &(data[0]), 
         data.size() * sizeof(uint8_t), DEFAULT)};
     return result != -1;
+}
+
+TcpStream& TcpStream::recv(std::vector<uint8_t> &v, int length) {
+    v.resize(length);
+    ::recv(socket_fd, &(v[0]), length, DEFAULT);
+    return *this;
 }

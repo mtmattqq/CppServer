@@ -13,7 +13,8 @@
 
 class TcpStream {
 private:
-    const static int AUTO = 0;
+    const static int AUTO{0};
+    const static int DEFAULT{0};
     int socket_fd;
     sockaddr_in address;
 public:
@@ -24,6 +25,7 @@ public:
     bool failed() { return socket_fd == -1;}
     int send(std::vector<uint8_t> &data);
     int send(std::string &data);
+    TcpStream& recv(std::vector<uint8_t> &v, int length);
 };
 
 #endif

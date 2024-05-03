@@ -6,6 +6,7 @@
 #include <iostream>
 #include <netinet/in.h>
 #include <string>
+#include <vector>
 
 void handle_connection(TcpStream &tcp_stream) {
     std::fstream in("index.html");
@@ -22,7 +23,11 @@ void handle_connection(TcpStream &tcp_stream) {
         content
     };
 
-    std::cout << http << "\n";
+    std::vector<uint8_t> request;
+    tcp_stream.recv(request, 1024);
+    for(int i{0}; i < request.size() && request[i] != 0; ++i) {
+        std::cout << char(request[i]);
+    }
 
     tcp_stream.send(http);
 }
