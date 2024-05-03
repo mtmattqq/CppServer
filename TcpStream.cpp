@@ -1,5 +1,4 @@
 #include "TcpStream.hpp"
-#include <cstddef>
 #include <cstdint>
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -29,40 +28,16 @@ bool TcpStream::connect() {
 
 int TcpStream::send(std::vector<uint8_t> &data) {
     const int DEFAULT{0};
-    uint8_t buf[64];
-    size_t cur{0};
-    while(cur < data.size()) {
-        size_t len{0};
-        for(len = 0; len < 64 && cur + len < data.size(); ++len) {
-            buf[len] = data[cur + len];
-        }
-        cur += len;
-        ssize_t result{::send(
-            socket_fd, (void*) buf, 
-            data.size() * sizeof(uint8_t), DEFAULT)};
-        if(result == -1) {
-            return -1;
-        }
-    }
-    return 0;
+    ssize_t result{::send(
+        socket_fd, (void*) &(data[0]), 
+        data.size() * sizeof(uint8_t), DEFAULT)};
+    return result != -1;
 }
 
 int TcpStream::send(std::string &data) {
     const int DEFAULT{0};
-    uint8_t buf[1024];
-    size_t cur{0};
-    while(cur < data.size()) {
-        size_t len{0};
-        for(len = 0; len < 1024 && cur + len < data.size(); ++len) {
-            buf[len] = data[cur + len];
-        }
-        cur += len;
-        ssize_t result{::send(
-            socket_fd, (void*) buf, 
-            data.size() * sizeof(uint8_t), DEFAULT)};
-        if(result == -1) {
-            return -1;
-        }
-    }
-    return 0;
+    ssize_t result{::send(
+        socket_fd, (void*) &(data[0]), 
+        data.size() * sizeof(uint8_t), DEFAULT)};
+    return result != -1;
 }
